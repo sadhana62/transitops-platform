@@ -14,11 +14,15 @@ router.use(auth);
 router.get("/kpis", dashboardController.getKPIs);
 router.get("/filters", dashboardController.getFilters);
 router.get("/recent-trips", dashboardController.getRecentTrips);
+router.get(
+  "/vehicle-status",
+  dashboardController.getVehicleStatus
+);
 module.exports = router;
 
 // const dashboardController = require("../controllers/dashboard.controller");
 
-console.log("Controller =>", dashboardController);
+console.log(dashboardController);
 // router.get("/kpis", dashboardController.getKPIs);
 
 // router.get("/filters", dashboardController.getFilters);

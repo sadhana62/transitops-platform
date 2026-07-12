@@ -5,6 +5,49 @@ const { Trip } = require("../models/Trip");
 console.log("Dashboard Controller Loaded");
 console.log(exports);
 
+
+
+
+// get api for vehicle status 
+// GET /api/dashboard/vehicle-status
+exports.getVehicleStatus = async (req, res) => {
+  try {
+    const total = await Vehicle.countDocuments();
+
+    const available = await Vehicle.countDocuments({
+      status: "Available",
+    });
+
+    const onTrip = await Vehicle.countDocuments({
+      status: "On Trip",
+    });
+
+    const inShop = await Vehicle.countDocuments({
+      status: "In Shop",
+    });
+
+    const retired = await Vehicle.countDocuments({
+      status: "Retired",
+    });
+
+    res.json({
+      total,
+      available,
+      onTrip,
+      inShop,
+      retired,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Could not fetch vehicle status.",
+      error: err.message,
+    });
+  }
+};
+
+
+
+
 // GET /api/dashboard/recent-trips
 exports.getRecentTrips = async (req, res) => {
   try {

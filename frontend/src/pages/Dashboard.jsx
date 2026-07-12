@@ -3,6 +3,7 @@ import api from '../api/axios';
 import KpiCard from '../components/KpiCard';
 import { Select } from '../components/FormField';
 import { useAuth } from '../context/AuthContext';
+import StatusBar from "../components/StatusBar";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -12,6 +13,7 @@ export default function Dashboard() {
   const [region, setRegion] = useState('');
   const [loading, setLoading] = useState(true);
   const [recentTrips, setRecentTrips] = useState([]);
+  const [vehicleStatus, setVehicleStatus] = useState(null);
 
   useEffect(() => {
     api
@@ -41,6 +43,11 @@ export default function Dashboard() {
     .catch((err) => console.log(err));
 }, []);
 
+useEffect(() => {
+  api
+    .get("/dashboard/vehicle-status")
+    .then(({ data }) => setVehicleStatus(data));
+}, []);
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -191,16 +198,47 @@ const getStatusColor = (status) => {
 
   {/* Vehicle Status */}
 
-  <div className="rounded border border-base-700 bg-base-900 p-4">
-    <h2 className="text-lg font-semibold">
-      Vehicle Status
-    </h2>
+<div className="rounded border border-base-700 bg-base-900 p-4">
 
-    <p className="mt-4 text-base-400">
-      Coming Soon...
-    </p>
+  <h2 className="mb-4 text-lg font-semibold">
+    Vehicle Status
+  </h2>
 
-  </div>
+  {vehicleStatus && (
+    <div className="space-y-4">
+
+      <StatusBar
+        label="Available"
+        value={vehicleStatus.available}
+        total={vehicleStatus.total}
+        color="bg-green-500"
+      />
+
+      <StatusBar
+        label="On Trip"
+        value={vehicleStatus.onTrip}
+        total={vehicleStatus.total}
+        color="bg-blue-500"
+      />
+
+      <StatusBar
+        label="In Shop"
+        value={vehicleStatus.inShop}
+        total={vehicleStatus.total}
+        color="bg-yellow-500"
+      />
+
+      <StatusBar
+        label="Retired"
+        value={vehicleStatus.retired}
+        total={vehicleStatus.total}
+        color="bg-red-500"
+      />
+
+    </div>
+  )}
+
+</div>
 
 </div>
     </div>
