@@ -2,54 +2,54 @@
 @import "tailwindcss";
 
 :root {
-  /* Nordic Sage & Antique Gold Light Theme */
-  --base-950: #f5f4ef; /* soft linen */
-  --base-900: #ffffff; /* white */
-  --base-800: #edebe4; /* warm sand-100 */
-  --base-700: #dfdbd0; /* warm sand-200 */
-  --base-600: #d0caba; /* warm sand-300 */
-  --base-500: #7a7566; /* sage gray text */
-  --base-400: #524f44; /* basalt gray text lighter */
-  --base-200: #2c2a24; /* basalt gray text */
-  --base-100: #181714; /* deep basalt */
+  /* Slate/Blue Soft Premium Light Theme */
+  --base-950: #f8fafc; /* very light slate background */
+  --base-900: #ffffff; /* white cards */
+  --base-800: #f1f5f9; /* soft gray input/bg */
+  --base-700: #e2e8f0; /* borders */
+  --base-600: #cbd5e1; /* borders focus */
+  --base-500: #64748b; /* secondary text */
+  --base-400: #475569; /* primary text lighter */
+  --base-200: #1e293b; /* primary text */
+  --base-100: #0f172a; /* bold title text */
 
-  --signal-500: #3d5e4b; /* earthy sage green */
-  --signal-600: #2f4a3a; /* deep sage green */
+  --signal-500: #4f46e5; /* Royal Blue/Indigo accent */
+  --signal-600: #3b82f6; /* Blue accent */
 
-  --ok-500: #4b6b40; /* olive green */
-  --active-500: #9b7e51; /* antique bronze */
-  --warn-500: #b07c35; /* terracotta ochre */
-  --danger-500: #a34843; /* terracotta red */
+  --ok-500: #10b981; /* emerald success */
+  --active-500: #06b6d4; /* teal links */
+  --warn-500: #f59e0b; /* amber warning */
+  --danger-500: #ef4444; /* red danger */
 
-  --body-bg-image: radial-gradient(circle at top left, rgba(61, 94, 75, 0.08), transparent 36%),
-                   radial-gradient(circle at top right, rgba(155, 126, 81, 0.06), transparent 36%);
-  --btn-shadow: 0 8px 20px -6px rgba(61, 94, 75, 0.4);
+  --body-bg-image: radial-gradient(circle at top left, rgba(79, 70, 229, 0.03), transparent 40%),
+                   radial-gradient(circle at top right, rgba(6, 182, 212, 0.03), transparent 40%);
+  --btn-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.35);
   --color-scheme: light;
 }
 
 .dark {
-  /* Nordic Sage & Obsidian Dark Theme */
-  --base-950: #121413; /* deep obsidian sage-black */
-  --base-900: #191c1a; /* sage-charcoal */
-  --base-800: #242926; /* muted forest-stone */
-  --base-700: #2f3531; /* border forest-stone */
-  --base-600: #3f4742; /* border lighter */
-  --base-500: #87928a; /* sage gray */
-  --base-400: #a8b4ab; /* soft sage */
-  --base-200: #cad4cd; /* soft alabaster-sage */
-  --base-100: #eaf0eb; /* white-sage */
+  /* Premium Basalt/Obsidian Dark Theme */
+  --base-950: #0b0f19; /* very deep slate-blue background */
+  --base-900: #121826; /* deep slate-blue cards */
+  --base-800: #1e2640; /* soft input/surfaces */
+  --base-700: #2a3454; /* borders */
+  --base-600: #3c4a73; /* borders focus */
+  --base-500: #8c9bb4; /* secondary text */
+  --base-400: #a3b3cc; /* primary text lighter */
+  --base-200: #cbd5e1; /* primary text */
+  --base-100: #f8fafc; /* bold title text */
 
-  --signal-500: #628c74; /* aesthetic sage green */
-  --signal-600: #4f735e; /* deep aesthetic sage */
+  --signal-500: #6366f1; /* indigo accent */
+  --signal-600: #38bdf8; /* sky blue accent */
 
-  --ok-500: #738d61; /* aesthetic olive */
-  --active-500: #d0b48c; /* warm champagne bronze */
-  --warn-500: #dfa663; /* terracotta ochre */
-  --danger-500: #e06c64; /* soft crimson */
+  --ok-500: #34d399; /* emerald success */
+  --active-500: #22d3ee; /* teal links */
+  --warn-500: #fbbf24; /* amber warning */
+  --danger-500: #f87171; /* red danger */
 
-  --body-bg-image: radial-gradient(circle at top left, rgba(98, 140, 116, 0.05), transparent 40%),
-                   radial-gradient(circle at top right, rgba(208, 180, 140, 0.03), transparent 40%);
-  --btn-shadow: 0 8px 20px -6px rgba(98, 140, 116, 0.3);
+  --body-bg-image: radial-gradient(circle at top left, rgba(99, 102, 241, 0.05), transparent 45%),
+                   radial-gradient(circle at top right, rgba(34, 211, 238, 0.04), transparent 45%);
+  --btn-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.4);
   --color-scheme: dark;
 }
 

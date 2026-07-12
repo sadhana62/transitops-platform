@@ -8,6 +8,10 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Cell,
+  ScatterChart,
+  Scatter,
+  ZAxis,
 } from 'recharts';
 import api from '../api/axios';
 import KpiCard from '../components/KpiCard';
@@ -53,10 +57,20 @@ export default function Reports() {
     }
   };
 
+  const BAR_COLORS = ['#4f46e5', '#10b981', '#6366f1', '#f59e0b', '#ec4899'];
+
   const chartData = report.map((item) => ({
     name: item.registrationNumber,
     'Fuel Efficiency (km/L)': item.fuelEfficiencyKmPerLiter,
     'Operational Cost': item.operationalCost,
+  }));
+
+  const bubbleData = report.map((item) => ({
+    name: item.registrationNumber,
+    distance: item.totalDistanceKm,
+    efficiency: item.fuelEfficiencyKmPerLiter,
+    cost: item.operationalCost,
+    size: item.operationalCost || 100,
   }));
 
   return (
@@ -85,47 +99,106 @@ export default function Reports() {
           <KpiCard
             label="On Trip Now"
             value={utilization.onTripVehicles}
-            accent="#4c8bf5"
+            accent="#4f46e5"
           />
           <KpiCard
             label="Fleet Utilization"
             value={utilization.fleetUtilizationPercent}
             suffix="%"
-            accent="#f2a93b"
+            accent="#10b981"
           />
         </div>
       )}
 
       {!loading && chartData.length > 0 && (
-        <div className="mb-6 rounded border border-base-700 bg-base-900 p-4 sm:p-5">
-          <p className="mb-4 font-display text-sm font-semibold">
-            Fuel efficiency by vehicle (km/L)
-          </p>
+        <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {/* Fuel Efficiency Bar Chart */}
+          <div className="rounded-3xl border border-base-700 bg-base-900 p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+            <p className="mb-4 font-display text-sm font-semibold text-base-100">
+              Fuel efficiency by vehicle (km/L)
+            </p>
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--base-700)" opacity={0.3} />
+                <XAxis
+                  dataKey="name"
+                  stroke="var(--base-500)"
+                  fontSize={11}
+                  interval={0}
+                />
+                <YAxis stroke="var(--base-500)" fontSize={11} width={36} />
+                <Tooltip
+                  contentStyle={{
+                    background: 'var(--base-900)',
+                    border: '1px solid var(--base-700)',
+                    borderRadius: '12px',
+                    fontSize: 12,
+                  }}
+                />
+                <Bar
+                  dataKey="Fuel Efficiency (km/L)"
+                  radius={[6, 6, 0, 0]}
+                  barSize={32}
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
-          <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#232b32" />
-              <XAxis
-                dataKey="name"
-                stroke="#75838d"
-                fontSize={11}
-                interval="preserveStartEnd"
-              />
-              <YAxis stroke="#75838d" fontSize={11} width={36} />
-              <Tooltip
-                contentStyle={{
-                  background: '#1a2126',
-                  border: '1px solid #303a42',
-                  fontSize: 12,
-                }}
-              />
-              <Bar
-                dataKey="Fuel Efficiency (km/L)"
-                fill="#f2a93b"
-                radius={[3, 3, 0, 0]}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+          {/* Cost & Efficiency Bubble Chart (Solid Bubble Form) */}
+          <div className="rounded-3xl border border-base-700 bg-base-900 p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+            <p className="mb-4 font-display text-sm font-semibold text-base-100">
+              Operational Cost vs. Fuel Efficiency (Solid Bubble Form)
+            </p>
+            <ResponsiveContainer width="100%" height={240}>
+              <ScatterChart margin={{ top: 10, right: 10, bottom: 0, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--base-700)" opacity={0.3} />
+                <XAxis
+                  type="number"
+                  dataKey="distance"
+                  name="Distance"
+                  unit=" km"
+                  stroke="var(--base-500)"
+                  fontSize={11}
+                />
+                <YAxis
+                  type="number"
+                  dataKey="efficiency"
+                  name="Efficiency"
+                  unit=" km/L"
+                  stroke="var(--base-500)"
+                  fontSize={11}
+                />
+                <ZAxis
+                  type="number"
+                  dataKey="size"
+                  range={[150, 1200]}
+                  name="Operational Cost"
+                  unit=" Rs"
+                />
+                <Tooltip
+                  cursor={{ strokeDasharray: '3 3' }}
+                  contentStyle={{
+                    background: 'var(--base-900)',
+                    border: '1px solid var(--base-700)',
+                    borderRadius: '12px',
+                    fontSize: 12,
+                  }}
+                />
+                <Scatter name="Fleet Cost & Efficiency" data={bubbleData}>
+                  {bubbleData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
+                  ))}
+                </Scatter>
+              </ScatterChart>
+            </ResponsiveContainer>
+            <p className="mt-2 text-[10px] text-base-500 text-center">
+              Bubble size represents total operational cost (fuel + maintenance).
+            </p>
+          </div>
         </div>
       )}
 

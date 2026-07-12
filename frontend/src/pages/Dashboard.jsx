@@ -138,8 +138,8 @@ const getStatusColor = (status) => {
 
   {/* Recent Trips */}
 
-  <div className="rounded border border-base-700 bg-base-900 p-4">
-    <h2 className="mb-4 text-lg font-semibold">
+  <div className="rounded-3xl border border-base-700 bg-base-900 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+    <h2 className="mb-4 text-lg font-semibold text-base-100">
       Recent Trips
     </h2>
 
@@ -161,7 +161,7 @@ const getStatusColor = (status) => {
             className="border-b border-base-800"
           >
 
-            <td className="py-3">
+            <td className="py-3 font-medium">
               {trip.vehicle?.name}
             </td>
 
@@ -191,8 +191,8 @@ const getStatusColor = (status) => {
 
   {/* Vehicle Status */}
 
-  <div className="rounded border border-base-700 bg-base-900 p-4">
-    <h2 className="text-lg font-semibold">
+  <div className="rounded-3xl border border-base-700 bg-base-900 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+    <h2 className="text-lg font-semibold text-base-100">
       Vehicle Status
     </h2>
 
