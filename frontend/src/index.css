@@ -25,14 +25,36 @@
   --color-danger-500: #e2574c;
 }
 
-html, body, #root {
-  height: 100%;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+html {
+  background-color: var(--color-base-950);
 }
 
 body {
+  min-width: 320px;
+  margin: 0;
+  overflow-x: hidden;
   background-color: var(--color-base-950);
   color: var(--color-base-100);
   font-family: var(--font-body);
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
 }
 
 /* Manifest-tag signature status badge */
@@ -40,13 +62,13 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  padding: 0.2rem 0.5rem 0.2rem 0.45rem;
+  border-left: 2px solid currentColor;
+  background: color-mix(in srgb, currentColor 12%, transparent);
   font-family: var(--font-mono);
   font-size: 0.68rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 0.2rem 0.5rem 0.2rem 0.45rem;
-  border-left: 2px solid currentColor;
-  background: color-mix(in srgb, currentColor 12%, transparent);
   white-space: nowrap;
 }
 
@@ -58,9 +80,18 @@ body {
   width: 8px;
   height: 8px;
 }
+
 .scrollbar-thin::-webkit-scrollbar-thumb {
   background: var(--color-base-600);
 }
+
 .scrollbar-thin::-webkit-scrollbar-track {
   background: transparent;
+}
+
+@media (max-width: 639px) {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
 }

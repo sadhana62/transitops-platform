@@ -13,14 +13,19 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get('/dashboard/filters').then(({ data }) => setFilters(data)).catch(() => {});
+    api
+      .get('/dashboard/filters')
+      .then(({ data }) => setFilters(data))
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
     setLoading(true);
     const params = {};
+
     if (type) params.type = type;
     if (region) params.region = region;
+
     api
       .get('/dashboard/kpis', { params })
       .then(({ data }) => setKpis(data))
@@ -29,19 +34,41 @@ export default function Dashboard() {
 
   return (
     <div>
-      <div className="mb-6 flex items-end justify-between">
+      <div className="mb-6 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="mono text-[10px] uppercase tracking-widest text-base-400">Operations overview</p>
-          <h1 className="font-display text-2xl font-semibold">Welcome back, {user?.name?.split(' ')[0]}</h1>
+          <p className="mono text-[10px] uppercase tracking-widest text-base-400">
+            Operations overview
+          </p>
+          <h1 className="font-display text-2xl font-semibold">
+            Welcome back, {user?.name?.split(' ')[0]}
+          </h1>
         </div>
-        <div className="flex gap-2">
-          <Select value={type} onChange={(e) => setType(e.target.value)} className="w-40">
+
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+          <Select
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className="w-full sm:w-40"
+          >
             <option value="">All types</option>
-            {filters.types.map((t) => <option key={t} value={t}>{t}</option>)}
+            {filters.types.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
           </Select>
-          <Select value={region} onChange={(e) => setRegion(e.target.value)} className="w-40">
+
+          <Select
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
+            className="w-full sm:w-40"
+          >
             <option value="">All regions</option>
-            {filters.regions.map((r) => <option key={r} value={r}>{r}</option>)}
+            {filters.regions.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
           </Select>
         </div>
       </div>
@@ -49,20 +76,38 @@ export default function Dashboard() {
       {loading || !kpis ? (
         <p className="text-sm text-base-400">Loading KPIs…</p>
       ) : (
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
           <KpiCard label="Active Vehicles" value={kpis.activeVehicles} />
-          <KpiCard label="Available Vehicles" value={kpis.availableVehicles} accent="#3fb8af" />
-          <KpiCard label="Vehicles in Maintenance" value={kpis.vehiclesInMaintenance} accent="#f2a93b" />
-          <KpiCard label="Fleet Utilization" value={kpis.fleetUtilization} suffix="%" accent="#4c8bf5" />
+          <KpiCard
+            label="Available Vehicles"
+            value={kpis.availableVehicles}
+            accent="#3fb8af"
+          />
+          <KpiCard
+            label="Vehicles in Maintenance"
+            value={kpis.vehiclesInMaintenance}
+            accent="#f2a93b"
+          />
+          <KpiCard
+            label="Fleet Utilization"
+            value={kpis.fleetUtilization}
+            suffix="%"
+            accent="#4c8bf5"
+          />
           <KpiCard label="Active Trips" value={kpis.activeTrips} accent="#4c8bf5" />
           <KpiCard label="Pending Trips" value={kpis.pendingTrips} />
-          <KpiCard label="Drivers On Duty" value={kpis.driversOnDuty} accent="#3fb8af" />
+          <KpiCard
+            label="Drivers On Duty"
+            value={kpis.driversOnDuty}
+            accent="#3fb8af"
+          />
           <KpiCard label="Total Drivers" value={kpis.totalDrivers} />
         </div>
       )}
 
-      <div className="mt-8 rounded border border-base-700 bg-base-900 p-5">
+      <div className="mt-6 rounded border border-base-700 bg-base-900 p-4 sm:mt-8 sm:p-5">
         <p className="font-display text-sm font-semibold">Quick guide</p>
+
         <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-base-400">
           <li>Register vehicles and drivers before creating trips.</li>
           <li>Trips move through Draft → Dispatched → Completed, or can be Cancelled.</li>
