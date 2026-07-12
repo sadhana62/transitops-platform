@@ -59,7 +59,7 @@ export function PrimaryButton({ children, className = '', ...props }) {
   return (
     <button
       {...props}
-      className={`min-h-11 rounded-xl bg-signal-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_20px_-6px_rgba(79,70,229,0.4)] transition hover:bg-signal-600 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`min-h-11 rounded-xl bg-signal-500 px-4 py-2 text-sm font-semibold text-white shadow-[var(--btn-shadow)] transition hover:bg-signal-600 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
     >
       {children}
     </button>
