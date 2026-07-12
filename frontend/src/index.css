@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --color-base-950: #0c1114;
+  --color-base-900: #12181c;
+  --color-base-800: #1a2126;
+  --color-base-700: #232b32;
+  --color-base-600: #303a42;
+  --color-base-500: #4a5760;
+  --color-base-400: #75838d;
+  --color-base-200: #c3ccd1;
+  --color-base-100: #e7ecef;
+
+  --color-signal-500: #f2a93b;
+  --color-signal-600: #d98e1f;
+
+  --color-ok-500: #3fb8af;
+  --color-active-500: #4c8bf5;
+  --color-warn-500: #f2a93b;
+  --color-danger-500: #e2574c;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-base-950);
+  color: var(--color-base-100);
+  font-family: var(--font-body);
+}
+
+/* Manifest-tag signature status badge */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem 0.2rem 0.45rem;
+  border-left: 2px solid currentColor;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  white-space: nowrap;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--color-base-600);
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
