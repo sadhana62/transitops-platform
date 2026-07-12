@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Compass, Route, ShieldCheck, Sparkles, Sun, Moon } from 'lucide-react';
+import { Compass, Route, ShieldCheck, Sparkles, Sun, Moon, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import {
@@ -34,14 +34,19 @@ const HERO_SLIDES = [
 ];
 
 export default function Login() {
-  const { login, register, loading, error, setError } = useAuth();
+  const { login, register, forgotPassword, resetPassword, loading, error, setError } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [mode, setMode] = useState('login');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [resetEmailUrl, setResetEmailUrl] = useState('');
   const [form, setForm] = useState({
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
+    otp: '',
     role: 'FleetManager',
   });
 
@@ -52,9 +57,65 @@ export default function Login() {
     }));
   };
 
+  const handleForgotPasswordClick = () => {
+    setMode('forgot-password');
+    setError('');
+    setSuccessMessage('');
+    setResetEmailUrl('');
+  };
+
   const submit = async (event) => {
     event.preventDefault();
     setError('');
+    setSuccessMessage('');
+    setResetEmailUrl('');
+
+    if (mode === 'forgot-password') {
+      const res = await forgotPassword(form.email, form.role);
+      if (res.ok) {
+        setSuccessMessage(res.message);
+        if (res.previewUrl) {
+          setResetEmailUrl(res.previewUrl);
+        }
+        // Switch to OTP verify & password reset mode
+        setMode('reset-password');
+      }
+      return;
+    }
+
+    if (mode === 'reset-password') {
+      if (form.password !== form.confirmPassword) {
+        setError("Passwords do not match.");
+        return;
+      }
+
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+      if (!passwordRegex.test(form.password)) {
+        setError("Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&#).");
+        return;
+      }
+
+      const res = await resetPassword(form.email, form.otp, form.password);
+      if (res.ok) {
+        setSuccessMessage(res.message);
+        setMode('login'); // go back to login mode
+        setForm((prev) => ({
+          ...prev,
+          password: '',
+          confirmPassword: '',
+          otp: '',
+        }));
+      }
+      return;
+    }
+
+    if (mode === 'register') {
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+      if (!passwordRegex.test(form.password)) {
+        setError("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&#).");
+        return;
+      }
+    }
 
     const ok =
       mode === 'login'
@@ -142,32 +203,70 @@ export default function Login() {
         <section className="flex items-center justify-center px-10 py-10">
           <div className="w-full max-w-[26rem]">
             <div className="rounded-3xl border border-base-700 bg-base-900/80 p-5 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] backdrop-blur sm:p-6">
-              <div className="mb-5 flex gap-1 rounded-2xl bg-base-800 p-1">
-                <button
-                  type="button"
-                  onClick={() => setMode('login')}
-                  className={`flex-1 rounded-xl px-2 py-2 text-sm transition ${
-                    mode === 'login'
-                      ? 'bg-base-900 text-signal-600 shadow-sm'
-                      : 'text-base-400'
-                  }`}
-                >
-                  Sign in
-                </button>
+              {mode === 'forgot-password' || mode === 'reset-password' ? (
+                <div className="mb-6">
+                  <h2 className="font-display text-xl font-semibold">
+                    {mode === 'forgot-password' ? 'Forgot Password' : 'Reset Password'}
+                  </h2>
+                  <p className="text-xs text-base-400 mt-1">
+                    {mode === 'forgot-password'
+                      ? 'Enter your email and role to request a 6-digit OTP code.'
+                      : 'Enter the 6-digit OTP code and set your new password.'}
+                  </p>
+                </div>
+              ) : (
+                <div className="mb-5 flex gap-1 rounded-2xl bg-base-800 p-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode('login');
+                      setError('');
+                      setSuccessMessage('');
+                    }}
+                    className={`flex-1 rounded-xl px-2 py-2 text-sm transition ${
+                      mode === 'login'
+                        ? 'bg-base-900 text-signal-600 shadow-sm'
+                        : 'text-base-400'
+                    }`}
+                  >
+                    Sign in
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => setMode('register')}
-                  className={`flex-1 rounded-xl px-2 py-2 text-sm transition ${
-                    mode === 'register'
-                      ? 'bg-base-900 text-signal-600 shadow-sm'
-                      : 'text-base-400'
-                  }`}
-                >
-                  Create account
-                </button>
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode('register');
+                      setError('');
+                      setSuccessMessage('');
+                    }}
+                    className={`flex-1 rounded-xl px-2 py-2 text-sm transition ${
+                      mode === 'register'
+                        ? 'bg-base-900 text-signal-600 shadow-sm'
+                        : 'text-base-400'
+                    }`}
+                  >
+                    Create account
+                  </button>
+                </div>
+              )}
 
+              {successMessage && (
+                <Banner tone="ok">
+                  <div>
+                    <p>{successMessage}</p>
+                    {resetEmailUrl && (
+                      <a
+                        href={resetEmailUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 inline-block font-semibold underline text-teal-800 dark:text-teal-400 hover:opacity-80 text-xs"
+                      >
+                        [Dev Mode] Click here to open sent email preview 📧
+                      </a>
+                    )}
+                  </div>
+                </Banner>
+              )}
               {error && <Banner tone="danger">{error}</Banner>}
 
               <form onSubmit={submit}>
@@ -189,37 +288,114 @@ export default function Login() {
                     onChange={update('email')}
                     required
                     placeholder="you@company.com"
+                    disabled={mode === 'reset-password'}
+                    className={mode === 'reset-password' ? 'opacity-60 cursor-not-allowed' : ''}
                   />
                 </Field>
 
-                <Field label="Password" required>
-                  <Input
-                    type="password"
-                    value={form.password}
-                    onChange={update('password')}
-                    required
-                    minLength={6}
-                    placeholder="••••••••"
-                  />
-                </Field>
+                {mode === 'reset-password' && (
+                  <Field label="OTP Code" required>
+                    <Input
+                      type="text"
+                      value={form.otp}
+                      onChange={update('otp')}
+                      required
+                      maxLength={6}
+                      placeholder="123456"
+                    />
+                  </Field>
+                )}
 
-                <Field label="Role" required>
-                  <Select value={form.role} onChange={update('role')}>
-                    {ROLES.map((role) => (
-                      <option key={role.value} value={role.value}>
-                        {role.label}
-                      </option>
-                    ))}
-                  </Select>
-                </Field>
+                {mode !== 'forgot-password' && (
+                  <Field label={mode === 'reset-password' ? "New Password" : "Password"} required>
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        value={form.password}
+                        onChange={update('password')}
+                        required
+                        className="pr-10"
+                        placeholder="••••••••"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-base-400 hover:text-base-100 transition"
+                        title={showPassword ? "Hide password" : "Show password"}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                    {(mode === 'register' || mode === 'reset-password') && (
+                      <p className="mt-1 text-[10px] text-base-400 leading-normal">
+                        At least 8 chars, including 1 uppercase, 1 lowercase, 1 number, and 1 symbol.
+                      </p>
+                    )}
+                  </Field>
+                )}
+
+                {mode === 'reset-password' && (
+                  <Field label="Confirm Password" required>
+                    <Input
+                      type="password"
+                      value={form.confirmPassword}
+                      onChange={update('confirmPassword')}
+                      required
+                      placeholder="••••••••"
+                    />
+                  </Field>
+                )}
+
+                {mode === 'login' && (
+                  <div className="mb-4 text-right">
+                    <button
+                      type="button"
+                      onClick={handleForgotPasswordClick}
+                      className="text-xs font-semibold text-signal-500 hover:text-signal-600 transition"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                )}
+
+                {mode !== 'reset-password' && (
+                  <Field label="Role" required>
+                    <Select value={form.role} onChange={update('role')}>
+                      {ROLES.map((role) => (
+                        <option key={role.value} value={role.value}>
+                          {role.label}
+                        </option>
+                      ))}
+                    </Select>
+                  </Field>
+                )}
 
                 <PrimaryButton type="submit" disabled={loading} className="mt-2 w-full">
                   {loading
                     ? 'Please wait…'
                     : mode === 'login'
                       ? 'Sign in'
-                      : 'Create account'}
+                      : mode === 'register'
+                        ? 'Create account'
+                        : mode === 'forgot-password'
+                          ? 'Send OTP Code'
+                          : 'Reset Password'}
                 </PrimaryButton>
+
+                {(mode === 'forgot-password' || mode === 'reset-password') && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode('login');
+                      setError('');
+                      setSuccessMessage('');
+                      setResetEmailUrl('');
+                    }}
+                    className="mt-4 w-full text-center text-xs font-semibold text-base-400 hover:text-base-100 transition"
+                  >
+                    Back to Sign in
+                  </button>
+                )}
               </form>
             </div>
           </div>

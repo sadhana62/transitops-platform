@@ -51,8 +51,38 @@ export function AuthProvider({ children }) {
     setUser(null);
   }, []);
 
+  const forgotPassword = useCallback(async (email, role) => {
+    setLoading(true);
+    setError('');
+    try {
+      const { data } = await api.post('/auth/forgot-password', { email, role });
+      return { ok: true, message: data.message, previewUrl: data.previewUrl };
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Failed to submit request.';
+      setError(msg);
+      return { ok: false, message: msg };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const resetPassword = useCallback(async (email, otp, password) => {
+    setLoading(true);
+    setError('');
+    try {
+      const { data } = await api.post('/auth/reset-password', { email, otp, password });
+      return { ok: true, message: data.message };
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Failed to reset password.';
+      setError(msg);
+      return { ok: false, message: msg };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading, error, setError }}>
+    <AuthContext.Provider value={{ user, login, register, logout, forgotPassword, resetPassword, loading, error, setError }}>
       {children}
     </AuthContext.Provider>
   );
