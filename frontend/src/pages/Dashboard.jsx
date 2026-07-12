@@ -41,6 +41,26 @@ export default function Dashboard() {
     .catch((err) => console.log(err));
 }, []);
 
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case "Completed":
+      return "bg-green-500/20 text-green-400";
+
+    case "Dispatched":
+      return "bg-blue-500/20 text-blue-400";
+
+    case "Draft":
+      return "bg-gray-500/20 text-gray-300";
+
+    case "Cancelled":
+      return "bg-red-500/20 text-red-400";
+
+    default:
+      return "bg-yellow-500/20 text-yellow-400";
+  }
+};
+
   return (
     <div>
       <div className="mb-6 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -149,8 +169,14 @@ export default function Dashboard() {
               {trip.driver?.name}
             </td>
 
-            <td>
-              {trip.status}
+            <td className="py-3">
+              <span
+                className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${getStatusColor(
+                  trip.status
+                )}`}
+              >
+                {trip.status}
+              </span>
             </td>
 
           </tr>
