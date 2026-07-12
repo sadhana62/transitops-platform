@@ -100,10 +100,4 @@ you're in.
 | Log other expenses               | ✅ | ✅ | – | ✅ |
 | View reports & export CSV        | ✅ | ✅ | ✅ | ✅ |
 
-## Notes / next steps not built (optional bonus items from the brief)
 
-Email reminders for expiring licenses, vehicle document uploads, and dark mode
-(the UI ships dark-only by default) were left out to keep this within a focused
-core-feature build — see the "Mandatory Deliverables" vs "Bonus Features" split in
-the original brief. The data model (Maintenance, FuelLog, Expense) is structured so
-these can be added without schema changes.
