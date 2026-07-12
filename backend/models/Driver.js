@@ -19,4 +19,12 @@ driverSchema.methods.isLicenseExpired = function () {
   return this.licenseExpiryDate < new Date();
 };
 
+driverSchema.methods.isDispatchable = function () {
+  if (this.status !== 'Available') return false;
+
+  const expiry = new Date(this.licenseExpiryDate);
+  expiry.setHours(23, 59, 59, 999);
+  return expiry >= new Date();
+};
+
 module.exports = { Driver: mongoose.model('Driver', driverSchema), DRIVER_STATUSES };

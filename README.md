@@ -82,7 +82,7 @@ you're in.
   dispatched trip restores both to Available.
 - Creating an open maintenance record moves the vehicle to In Shop automatically;
   closing it restores Available (or Retired, if chosen).
-- Operational cost (Fuel + Maintenance) and ROI `(Revenue − (Maintenance + Fuel)) / AcquisitionCost`
+- Operational cost (Fuel + Maintenance) and ROI 
   are computed per vehicle in Reports, alongside fuel efficiency (distance/fuel) and
   fleet utilization. Reports can be exported as CSV.
 
