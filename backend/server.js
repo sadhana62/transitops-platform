@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const { loadBackendEnv } = require('./utils/env');
+const { startLicenseExpiryChecks } = require('./utils/cron');
 
 const authRoutes = require('./routes/auth');
 const vehicleRoutes = require('./routes/vehicles');
@@ -47,7 +48,10 @@ mongoose
   .connect(MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
-    app.listen(PORT, () => console.log(`TransitOps API running on port ${PORT}`));
+    app.listen(PORT, () => {
+      console.log(`TransitOps API running on port ${PORT}`);
+      startLicenseExpiryChecks();
+    });
   })
   .catch((err) => {
     console.error('MongoDB connection error:', err.message);
