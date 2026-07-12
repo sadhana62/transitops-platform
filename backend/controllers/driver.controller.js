@@ -62,6 +62,7 @@ exports.createDriver = async (req, res) => {
   try {
     const {
       name,
+      email,
       licenseNumber,
       licenseCategory,
       licenseExpiryDate,
@@ -71,6 +72,7 @@ exports.createDriver = async (req, res) => {
 
     if (
       !name ||
+      !email ||
       !licenseNumber ||
       !licenseCategory ||
       !licenseExpiryDate ||
@@ -78,7 +80,7 @@ exports.createDriver = async (req, res) => {
     ) {
       return res.status(400).json({
         message:
-          "Name, license number, license category, license expiry date, and contact number are required.",
+          "Name, email, license number, license category, license expiry date, and contact number are required.",
       });
     }
 
@@ -94,6 +96,7 @@ exports.createDriver = async (req, res) => {
 
     const driver = await Driver.create({
       name,
+      email,
       licenseNumber,
       licenseCategory,
       licenseExpiryDate,
@@ -129,6 +132,7 @@ exports.updateDriver = async (req, res) => {
 
     const {
       name,
+      email,
       licenseNumber,
       licenseCategory,
       licenseExpiryDate,
@@ -155,6 +159,7 @@ exports.updateDriver = async (req, res) => {
     }
 
     if (name != null) driver.name = name;
+    if (email != null) driver.email = email;
     if (licenseCategory != null) driver.licenseCategory = licenseCategory;
     if (licenseExpiryDate != null)
       driver.licenseExpiryDate = licenseExpiryDate;

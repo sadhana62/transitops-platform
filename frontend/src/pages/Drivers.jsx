@@ -15,6 +15,7 @@ import {
 
 const EMPTY_FORM = {
   name: '',
+  email: '',
   licenseNumber: '',
   licenseCategory: '',
   licenseExpiryDate: '',
@@ -71,6 +72,7 @@ export default function Drivers() {
     setEditing(driver);
     setForm({
       name: driver.name,
+      email: driver.email || '',
       licenseNumber: driver.licenseNumber,
       licenseCategory: driver.licenseCategory,
       licenseExpiryDate: driver.licenseExpiryDate?.slice(0, 10) || '',
@@ -162,6 +164,7 @@ export default function Drivers() {
           <thead>
             <tr className="border-b border-base-700 text-left text-[11px] uppercase tracking-wide text-base-400">
               <th className="px-4 py-3">Name</th>
+              <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">License No.</th>
               <th className="px-4 py-3">Category</th>
               <th className="px-4 py-3">License Expiry</th>
@@ -175,13 +178,13 @@ export default function Drivers() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={8} className="px-4 py-6 text-center text-base-400">
+                <td colSpan={9} className="px-4 py-6 text-center text-base-400">
                   Loading…
                 </td>
               </tr>
             ) : drivers.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-4 py-6 text-center text-base-400">
+                <td colSpan={9} className="px-4 py-6 text-center text-base-400">
                   No drivers registered yet.
                 </td>
               </tr>
@@ -191,7 +194,8 @@ export default function Drivers() {
                   key={driver._id}
                   className="border-b border-base-800 last:border-0 hover:bg-base-800/50"
                 >
-                  <td className="px-4 py-3">{driver.name}</td>
+                  <td className="px-4 py-3 font-medium">{driver.name}</td>
+                  <td className="px-4 py-3 text-base-400">{driver.email}</td>
                   <td className="mono px-4 py-3">{driver.licenseNumber}</td>
                   <td className="px-4 py-3">{driver.licenseCategory}</td>
 
@@ -254,13 +258,25 @@ export default function Drivers() {
         {error && <Banner tone="danger">{error}</Banner>}
 
         <form onSubmit={submit}>
-          <Field label="Full name" required>
-            <Input
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              required
-            />
-          </Field>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <Field label="Full name" required>
+              <Input
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                required
+              />
+            </Field>
+
+            <Field label="Email address" required>
+              <Input
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                required
+                placeholder="driver@transitops.com"
+              />
+            </Field>
+          </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field label="License number" required>
