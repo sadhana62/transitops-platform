@@ -16,6 +16,40 @@ import {
 import api from '../api/axios';
 import KpiCard from '../components/KpiCard';
 
+const Custom3DBar = (props) => {
+  const { x, y, width, height, index } = props;
+  if (width <= 0 || height <= 0) return null;
+
+  // Render cylinder cap offset proportional to bar width
+  const capHeight = Math.min(width * 0.25, 6);
+
+  return (
+    <g>
+      {/* Cylinder body */}
+      <path
+        d={`M ${x},${y + capHeight} 
+            L ${x},${y + height} 
+            L ${x + width},${y + height} 
+            L ${x + width},${y + capHeight} 
+            Z`}
+        fill={`url(#bar-grad-${index})`}
+      />
+
+      {/* Top Cap */}
+      <ellipse
+        cx={x + width / 2}
+        cy={y + capHeight}
+        rx={width / 2}
+        ry={capHeight}
+        fill={`url(#bar-cap-${index})`}
+        stroke="#ffffff"
+        strokeWidth={0.5}
+        strokeOpacity={0.3}
+      />
+    </g>
+  );
+};
+
 export default function Reports() {
   const [report, setReport] = useState([]);
   const [utilization, setUtilization] = useState(null);
@@ -112,13 +146,29 @@ export default function Reports() {
 
       {!loading && chartData.length > 0 && (
         <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* Fuel Efficiency Bar Chart */}
+          {/* Fuel Efficiency Bar Chart (3D Cylinder Form) */}
           <div className="rounded-3xl border border-base-700 bg-base-900 p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
             <p className="mb-4 font-display text-sm font-semibold text-base-100">
               Fuel efficiency by vehicle (km/L)
             </p>
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={chartData}>
+                <defs>
+                  {BAR_COLORS.map((color, index) => (
+                    <linearGradient key={`bar-grad-${index}`} id={`bar-grad-${index}`} x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor={color} stopOpacity={0.8} />
+                      <stop offset="30%" stopColor="#ffffff" stopOpacity={0.45} />
+                      <stop offset="70%" stopColor={color} stopOpacity={0.9} />
+                      <stop offset="100%" stopColor="#000000" stopOpacity={0.35} />
+                    </linearGradient>
+                  ))}
+                  {BAR_COLORS.map((color, index) => (
+                    <linearGradient key={`bar-cap-${index}`} id={`bar-cap-${index}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity={0.6} />
+                      <stop offset="100%" stopColor={color} stopOpacity={1} />
+                    </linearGradient>
+                  ))}
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--base-700)" opacity={0.3} />
                 <XAxis
                   dataKey="name"
@@ -128,6 +178,7 @@ export default function Reports() {
                 />
                 <YAxis stroke="var(--base-500)" fontSize={11} width={36} />
                 <Tooltip
+                  cursor={false} // Removes the grey hover background rectangle
                   contentStyle={{
                     background: 'var(--base-900)',
                     border: '1px solid var(--base-700)',
@@ -137,24 +188,29 @@ export default function Reports() {
                 />
                 <Bar
                   dataKey="Fuel Efficiency (km/L)"
-                  radius={[6, 6, 0, 0]}
+                  shape={<Custom3DBar />}
                   barSize={32}
-                >
-                  {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
-                  ))}
-                </Bar>
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Cost & Efficiency Bubble Chart (Solid Bubble Form) */}
+          {/* Cost & Efficiency Bubble Chart (3D Solid Bubble Form) */}
           <div className="rounded-3xl border border-base-700 bg-base-900 p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
             <p className="mb-4 font-display text-sm font-semibold text-base-100">
-              Operational Cost vs. Fuel Efficiency (Solid Bubble Form)
+              Operational Cost vs. Fuel Efficiency (3D Solid Bubble Form)
             </p>
             <ResponsiveContainer width="100%" height={240}>
               <ScatterChart margin={{ top: 10, right: 10, bottom: 0, left: 0 }}>
+                <defs>
+                  {BAR_COLORS.map((color, index) => (
+                    <radialGradient key={`bubble-grad-${index}`} id={`bubble-grad-${index}`} cx="30%" cy="30%" r="70%" fx="25%" fy="25%">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity={0.65} />
+                      <stop offset="45%" stopColor={color} stopOpacity={0.9} />
+                      <stop offset="100%" stopColor="#000000" stopOpacity={0.45} />
+                    </radialGradient>
+                  ))}
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--base-700)" opacity={0.3} />
                 <XAxis
                   type="number"
@@ -180,7 +236,7 @@ export default function Reports() {
                   unit=" Rs"
                 />
                 <Tooltip
-                  cursor={{ strokeDasharray: '3 3' }}
+                  cursor={false} // Removes crosshair hover guides if desired
                   contentStyle={{
                     background: 'var(--base-900)',
                     border: '1px solid var(--base-700)',
@@ -190,7 +246,7 @@ export default function Reports() {
                 />
                 <Scatter name="Fleet Cost & Efficiency" data={bubbleData}>
                   {bubbleData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
+                    <Cell key={`cell-${index}`} fill={`url(#bubble-grad-${index})`} />
                   ))}
                 </Scatter>
               </ScatterChart>
