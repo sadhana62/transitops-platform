@@ -2,6 +2,27 @@ const { Vehicle } = require("../models/Vehicle");
 const { Driver } = require("../models/Driver");
 const { Trip } = require("../models/Trip");
 
+console.log("Dashboard Controller Loaded");
+console.log(exports);
+
+// GET /api/dashboard/recent-trips
+exports.getRecentTrips = async (req, res) => {
+  try {
+    const trips = await Trip.find()
+      .populate("vehicle", "registrationNumber name")
+      .populate("driver", "name")
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    return res.json(trips);
+  } catch (err) {
+    return res.status(500).json({
+      message: "Could not fetch recent trips.",
+      error: err.message,
+    });
+  }
+};
+
 // GET /api/dashboard/kpis
 exports.getKPIs = async (req, res) => {
   try {
@@ -95,3 +116,6 @@ exports.getFilters = async (req, res) => {
     });
   }
 };
+
+console.log("Dashboard Controller Loaded");
+console.log(exports);

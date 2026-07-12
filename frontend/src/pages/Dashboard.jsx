@@ -11,6 +11,7 @@ export default function Dashboard() {
   const [type, setType] = useState('');
   const [region, setRegion] = useState('');
   const [loading, setLoading] = useState(true);
+  const [recentTrips, setRecentTrips] = useState([]);
 
   useEffect(() => {
     api
@@ -31,6 +32,14 @@ export default function Dashboard() {
       .then(({ data }) => setKpis(data))
       .finally(() => setLoading(false));
   }, [type, region]);
+
+  // recenttrips
+  useEffect(() => {
+  api
+    .get("/dashboard/recent-trips")
+    .then(({ data }) => setRecentTrips(data))
+    .catch((err) => console.log(err));
+}, []);
 
   return (
     <div>
@@ -105,17 +114,69 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="mt-6 rounded border border-base-700 bg-base-900 p-4 sm:mt-8 sm:p-5">
-        <p className="font-display text-sm font-semibold">Quick guide</p>
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-base-400">
-          <li>Register vehicles and drivers before creating trips.</li>
-          <li>Trips move through Draft → Dispatched → Completed, or can be Cancelled.</li>
-          <li>Sending a vehicle to Maintenance automatically removes it from dispatch.</li>
-          <li>Reports show fuel efficiency, operational cost, and ROI per vehicle.</li>
-          <li>Regions are miantained according to the vehicle stocks.</li>
-        </ul>
-      </div>
+  {/* Recent Trips */}
+
+  <div className="rounded border border-base-700 bg-base-900 p-4">
+    <h2 className="mb-4 text-lg font-semibold">
+      Recent Trips
+    </h2>
+
+    <table className="w-full text-sm">
+      <thead>
+        <tr className="border-b border-base-700 text-left text-base-400">
+          <th className="pb-2">Vehicle</th>
+          <th className="pb-2">Driver</th>
+          <th className="pb-2">Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        {recentTrips.map((trip) => (
+
+          <tr
+            key={trip._id}
+            className="border-b border-base-800"
+          >
+
+            <td className="py-3">
+              {trip.vehicle?.name}
+            </td>
+
+            <td>
+              {trip.driver?.name}
+            </td>
+
+            <td>
+              {trip.status}
+            </td>
+
+          </tr>
+
+        ))}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  {/* Vehicle Status */}
+
+  <div className="rounded border border-base-700 bg-base-900 p-4">
+    <h2 className="text-lg font-semibold">
+      Vehicle Status
+    </h2>
+
+    <p className="mt-4 text-base-400">
+      Coming Soon...
+    </p>
+
+  </div>
+
+</div>
     </div>
   );
 }
