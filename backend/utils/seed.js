@@ -26,10 +26,10 @@ const demoVehicles = [
 ];
 
 const demoDrivers = [
-  { name: 'Alex Fernandes', licenseNumber: 'DL0120230001', licenseCategory: 'LMV', licenseExpiryDate: new Date('2027-06-01'), contactNumber: '9810000001', safetyScore: 95, status: 'Available' },
-  { name: 'Priya Menon', licenseNumber: 'DL0120230002', licenseCategory: 'HMV', licenseExpiryDate: new Date('2026-12-01'), contactNumber: '9810000002', safetyScore: 88, status: 'Available' },
-  { name: 'Ravi Kumar', licenseNumber: 'DL0120230003', licenseCategory: 'HMV', licenseExpiryDate: new Date('2025-01-01'), contactNumber: '9810000003', safetyScore: 70, status: 'Available' }, // expired license
-  { name: 'Neha Joshi', licenseNumber: 'DL0120230004', licenseCategory: 'LMV', licenseExpiryDate: new Date('2027-03-01'), contactNumber: '9810000004', safetyScore: 60, status: 'Suspended' },
+  { name: 'Alex Fernandes', licenseNumber: 'DL0120230001', licenseCategory: 'LMV', licenseExpiryDate: new Date('2027-06-01'), contactNumber: '9810000001', email: 'alex.driver@transitops.demo', safetyScore: 95, status: 'Available' },
+  { name: 'Priya Menon', licenseNumber: 'DL0120230002', licenseCategory: 'HMV', licenseExpiryDate: new Date('2026-12-01'), contactNumber: '9810000002', email: 'priya.driver@transitops.demo', safetyScore: 88, status: 'Available' },
+  { name: 'Ravi Kumar', licenseNumber: 'DL0120230003', licenseCategory: 'HMV', licenseExpiryDate: new Date('2025-01-01'), contactNumber: '9810000003', email: 'sih49208@gmail.com', safetyScore: 70, status: 'Available' }, // expired license
+  { name: 'Neha Joshi', licenseNumber: 'DL0120230004', licenseCategory: 'LMV', licenseExpiryDate: new Date('2027-03-01'), contactNumber: '9810000004', email: 'neha.driver@transitops.demo', safetyScore: 60, status: 'Suspended' },
 ];
 
 async function seed() {
