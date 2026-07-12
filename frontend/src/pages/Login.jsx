@@ -13,7 +13,7 @@ import {
 
 const ROLES = [
   { value: 'FleetManager', label: 'Fleet Manager' },
-  { value: 'Driver', label: 'Driver' },
+  { value: 'Driver', label: 'Dispatcher' },
   { value: 'SafetyOfficer', label: 'Safety Officer' },
   { value: 'FinancialAnalyst', label: 'Financial Analyst' },
 ];
@@ -223,11 +223,10 @@ export default function Login() {
                       setError('');
                       setSuccessMessage('');
                     }}
-                    className={`flex-1 rounded-xl px-2 py-2 text-sm transition ${
-                      mode === 'login'
-                        ? 'bg-base-900 text-signal-600 shadow-sm'
-                        : 'text-base-400'
-                    }`}
+                    className={`flex-1 rounded-xl px-2 py-2 text-sm transition ${mode === 'login'
+                      ? 'bg-base-900 text-signal-600 shadow-sm'
+                      : 'text-base-400'
+                      }`}
                   >
                     Sign in
                   </button>
@@ -239,11 +238,10 @@ export default function Login() {
                       setError('');
                       setSuccessMessage('');
                     }}
-                    className={`flex-1 rounded-xl px-2 py-2 text-sm transition ${
-                      mode === 'register'
-                        ? 'bg-base-900 text-signal-600 shadow-sm'
-                        : 'text-base-400'
-                    }`}
+                    className={`flex-1 rounded-xl px-2 py-2 text-sm transition ${mode === 'register'
+                      ? 'bg-base-900 text-signal-600 shadow-sm'
+                      : 'text-base-400'
+                      }`}
                   >
                     Create account
                   </button>
