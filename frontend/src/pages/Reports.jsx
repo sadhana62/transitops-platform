@@ -8,9 +8,47 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Cell,
+  ScatterChart,
+  Scatter,
+  ZAxis,
 } from 'recharts';
 import api from '../api/axios';
 import KpiCard from '../components/KpiCard';
+
+const Custom3DBar = (props) => {
+  const { x, y, width, height, index } = props;
+  if (width <= 0 || height <= 0) return null;
+
+  // Render cylinder cap offset proportional to bar width
+  const capHeight = Math.min(width * 0.25, 6);
+
+  return (
+    <g>
+      {/* Cylinder body */}
+      <path
+        d={`M ${x},${y + capHeight} 
+            L ${x},${y + height} 
+            L ${x + width},${y + height} 
+            L ${x + width},${y + capHeight} 
+            Z`}
+        fill={`url(#bar-grad-${index})`}
+      />
+
+      {/* Top Cap */}
+      <ellipse
+        cx={x + width / 2}
+        cy={y + capHeight}
+        rx={width / 2}
+        ry={capHeight}
+        fill={`url(#bar-cap-${index})`}
+        stroke="#ffffff"
+        strokeWidth={0.5}
+        strokeOpacity={0.3}
+      />
+    </g>
+  );
+};
 
 export default function Reports() {
   const [report, setReport] = useState([]);
@@ -53,10 +91,20 @@ export default function Reports() {
     }
   };
 
+  const BAR_COLORS = ['#4f46e5', '#10b981', '#6366f1', '#f59e0b', '#ec4899'];
+
   const chartData = report.map((item) => ({
     name: item.registrationNumber,
     'Fuel Efficiency (km/L)': item.fuelEfficiencyKmPerLiter,
     'Operational Cost': item.operationalCost,
+  }));
+
+  const bubbleData = report.map((item) => ({
+    name: item.registrationNumber,
+    distance: item.totalDistanceKm,
+    efficiency: item.fuelEfficiencyKmPerLiter,
+    cost: item.operationalCost,
+    size: item.operationalCost || 100,
   }));
 
   return (
@@ -85,47 +133,128 @@ export default function Reports() {
           <KpiCard
             label="On Trip Now"
             value={utilization.onTripVehicles}
-            accent="#4c8bf5"
+            accent="#4f46e5"
           />
           <KpiCard
             label="Fleet Utilization"
             value={utilization.fleetUtilizationPercent}
             suffix="%"
-            accent="#f2a93b"
+            accent="#10b981"
           />
         </div>
       )}
 
       {!loading && chartData.length > 0 && (
-        <div className="mb-6 rounded border border-base-700 bg-base-900 p-4 sm:p-5">
-          <p className="mb-4 font-display text-sm font-semibold">
-            Fuel efficiency by vehicle (km/L)
-          </p>
+        <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {/* Fuel Efficiency Bar Chart (3D Cylinder Form) */}
+          <div className="rounded-3xl border border-base-700 bg-base-900 p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+            <p className="mb-4 font-display text-sm font-semibold text-base-100">
+              Fuel efficiency by vehicle (km/L)
+            </p>
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={chartData}>
+                <defs>
+                  {BAR_COLORS.map((color, index) => (
+                    <linearGradient key={`bar-grad-${index}`} id={`bar-grad-${index}`} x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor={color} stopOpacity={0.8} />
+                      <stop offset="30%" stopColor="#ffffff" stopOpacity={0.45} />
+                      <stop offset="70%" stopColor={color} stopOpacity={0.9} />
+                      <stop offset="100%" stopColor="#000000" stopOpacity={0.35} />
+                    </linearGradient>
+                  ))}
+                  {BAR_COLORS.map((color, index) => (
+                    <linearGradient key={`bar-cap-${index}`} id={`bar-cap-${index}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity={0.6} />
+                      <stop offset="100%" stopColor={color} stopOpacity={1} />
+                    </linearGradient>
+                  ))}
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--base-700)" opacity={0.3} />
+                <XAxis
+                  dataKey="name"
+                  stroke="var(--base-500)"
+                  fontSize={11}
+                  interval={0}
+                />
+                <YAxis stroke="var(--base-500)" fontSize={11} width={36} />
+                <Tooltip
+                  cursor={false} // Removes the grey hover background rectangle
+                  contentStyle={{
+                    background: 'var(--base-900)',
+                    border: '1px solid var(--base-700)',
+                    borderRadius: '12px',
+                    fontSize: 12,
+                  }}
+                />
+                <Bar
+                  dataKey="Fuel Efficiency (km/L)"
+                  shape={<Custom3DBar />}
+                  barSize={32}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
-          <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#232b32" />
-              <XAxis
-                dataKey="name"
-                stroke="#75838d"
-                fontSize={11}
-                interval="preserveStartEnd"
-              />
-              <YAxis stroke="#75838d" fontSize={11} width={36} />
-              <Tooltip
-                contentStyle={{
-                  background: '#1a2126',
-                  border: '1px solid #303a42',
-                  fontSize: 12,
-                }}
-              />
-              <Bar
-                dataKey="Fuel Efficiency (km/L)"
-                fill="#f2a93b"
-                radius={[3, 3, 0, 0]}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+          {/* Cost & Efficiency Bubble Chart (3D Solid Bubble Form) */}
+          <div className="rounded-3xl border border-base-700 bg-base-900 p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+            <p className="mb-4 font-display text-sm font-semibold text-base-100">
+              Operational Cost vs. Fuel Efficiency (3D Solid Bubble Form)
+            </p>
+            <ResponsiveContainer width="100%" height={240}>
+              <ScatterChart margin={{ top: 10, right: 10, bottom: 0, left: 0 }}>
+                <defs>
+                  {BAR_COLORS.map((color, index) => (
+                    <radialGradient key={`bubble-grad-${index}`} id={`bubble-grad-${index}`} cx="30%" cy="30%" r="70%" fx="25%" fy="25%">
+                      <stop offset="0%" stopColor="#ffffff" stopOpacity={0.65} />
+                      <stop offset="45%" stopColor={color} stopOpacity={0.9} />
+                      <stop offset="100%" stopColor="#000000" stopOpacity={0.45} />
+                    </radialGradient>
+                  ))}
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--base-700)" opacity={0.3} />
+                <XAxis
+                  type="number"
+                  dataKey="distance"
+                  name="Distance"
+                  unit=" km"
+                  stroke="var(--base-500)"
+                  fontSize={11}
+                />
+                <YAxis
+                  type="number"
+                  dataKey="efficiency"
+                  name="Efficiency"
+                  unit=" km/L"
+                  stroke="var(--base-500)"
+                  fontSize={11}
+                />
+                <ZAxis
+                  type="number"
+                  dataKey="size"
+                  range={[150, 1200]}
+                  name="Operational Cost"
+                  unit=" Rs"
+                />
+                <Tooltip
+                  cursor={false} // Removes crosshair hover guides if desired
+                  contentStyle={{
+                    background: 'var(--base-900)',
+                    border: '1px solid var(--base-700)',
+                    borderRadius: '12px',
+                    fontSize: 12,
+                  }}
+                />
+                <Scatter name="Fleet Cost & Efficiency" data={bubbleData}>
+                  {bubbleData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={`url(#bubble-grad-${index})`} />
+                  ))}
+                </Scatter>
+              </ScatterChart>
+            </ResponsiveContainer>
+            <p className="mt-2 text-[10px] text-base-500 text-center">
+              Bubble size represents total operational cost (fuel + maintenance).
+            </p>
+          </div>
         </div>
       )}
 
