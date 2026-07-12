@@ -31,6 +31,16 @@ export default function Trips() {
   const [completeForm, setCompleteForm] = useState(EMPTY_COMPLETE_FORM);
   const [completeError, setCompleteError] = useState('');
 
+  const loadDispatchOptions = async () => {
+    const [vehiclesRes, driversRes] = await Promise.all([
+      api.get('/vehicles', { params: { availableForDispatch: true } }),
+      api.get('/drivers', { params: { availableForDispatch: true } }),
+    ]);
+
+    setAvailableVehicles(vehiclesRes.data);
+    setAvailableDrivers(driversRes.data);
+  };
+
   const load = () => {
     setLoading(true);
     const params = {};
@@ -43,15 +53,18 @@ export default function Trips() {
   const openCreate = () => {
     setForm(EMPTY_TRIP_FORM);
     setError('');
-    Promise.all([
-      api.get('/vehicles', { params: { availableForDispatch: true } }),
-      api.get('/drivers', { params: { availableForDispatch: true } }),
-    ]).then(([v, d]) => {
-      setAvailableVehicles(v.data);
-      setAvailableDrivers(d.data);
-    });
     setCreateOpen(true);
   };
+
+  useEffect(() => {
+    if (!createOpen) return;
+
+    loadDispatchOptions().catch((err) => {
+      setAvailableVehicles([]);
+      setAvailableDrivers([]);
+      setError(err.response?.data?.message || 'Could not load dispatch options.');
+    });
+  }, [createOpen]);
 
   const submitCreate = async (e) => {
     e.preventDefault();

@@ -103,15 +103,12 @@ router.post('/:id/dispatch', rbac('FleetManager', 'Driver'), async (req, res) =>
       return res.status(400).json({ message: `${vehicle.name} is already on another trip.` });
     }
 
-    // Drivers with expired licenses or Suspended status cannot be assigned to trips
-    if (driver.status === 'Suspended') {
-      return res.status(400).json({ message: `${driver.name} is suspended and cannot be dispatched.` });
-    }
-    if (driver.licenseExpiryDate < new Date()) {
+    // Drivers must be currently dispatchable before a trip can be launched.
+    if (!driver.isDispatchable()) {
+      if (driver.status !== 'Available') {
+        return res.status(400).json({ message: `${driver.name} is ${driver.status.toLowerCase()} and cannot be dispatched.` });
+      }
       return res.status(400).json({ message: `${driver.name}'s license has expired and cannot be dispatched.` });
-    }
-    if (driver.status === 'On Trip') {
-      return res.status(400).json({ message: `${driver.name} is already on another trip.` });
     }
 
     // Cargo weight re-validated against current vehicle capacity

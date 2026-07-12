@@ -15,8 +15,7 @@ router.get('/', async (req, res) => {
     let drivers = await Driver.find(filter).sort({ createdAt: -1 });
 
     if (availableForDispatch === 'true') {
-      const now = new Date();
-      drivers = drivers.filter((d) => d.status === 'Available' && d.licenseExpiryDate >= now);
+      drivers = drivers.filter((d) => d.isDispatchable());
     }
     res.json(drivers);
   } catch (err) {
