@@ -1,28 +1,78 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
+:root {
+  /* Slate/Indigo Tech Light Theme */
+  --base-950: #f8fafc; /* slate-50 */
+  --base-900: #ffffff; /* white */
+  --base-800: #f1f5f9; /* slate-100 */
+  --base-700: #e2e8f0; /* slate-200 */
+  --base-600: #cbd5e1; /* slate-300 */
+  --base-500: #64748b; /* slate-500 */
+  --base-400: #475569; /* slate-600 */
+  --base-200: #1e293b; /* slate-800 */
+  --base-100: #0f172a; /* slate-900 */
+
+  --signal-500: #4f46e5; /* indigo-600 */
+  --signal-600: #4338ca; /* indigo-700 */
+
+  --ok-500: #0d9488; /* teal-600 */
+  --active-500: #2563eb; /* blue-600 */
+  --warn-500: #d97706; /* amber-600 */
+  --danger-500: #dc2626; /* red-600 */
+
+  --body-bg-image: radial-gradient(circle at top left, rgba(99, 102, 241, 0.06), transparent 36%),
+                   radial-gradient(circle at top right, rgba(13, 148, 136, 0.05), transparent 36%);
+  --color-scheme: light;
+}
+
+.dark {
+  /* Slate/Indigo Tech Dark Theme */
+  --base-950: #090d16; /* very dark slate-950 */
+  --base-900: #0f172a; /* slate-900 */
+  --base-800: #1e293b; /* slate-800 */
+  --base-700: #334155; /* slate-700 */
+  --base-600: #475569; /* slate-600 */
+  --base-500: #94a3b8; /* slate-400 */
+  --base-400: #cbd5e1; /* slate-300 */
+  --base-200: #e2e8f0; /* slate-200 */
+  --base-100: #f8fafc; /* slate-50 */
+
+  --signal-500: #6366f1; /* indigo-500 */
+  --signal-600: #4f46e5; /* indigo-600 */
+
+  --ok-500: #0f766e; /* teal-700 */
+  --active-500: #3b82f6; /* blue-500 */
+  --warn-500: #f59e0b; /* amber-500 */
+  --danger-500: #ef4444; /* red-500 */
+
+  --body-bg-image: radial-gradient(circle at top left, rgba(99, 102, 241, 0.04), transparent 40%),
+                   radial-gradient(circle at top right, rgba(13, 148, 136, 0.03), transparent 40%);
+  --color-scheme: dark;
+}
+
 @theme {
   --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 
-  --color-base-950: #0c1114;
-  --color-base-900: #12181c;
-  --color-base-800: #1a2126;
-  --color-base-700: #232b32;
-  --color-base-600: #303a42;
-  --color-base-500: #4a5760;
-  --color-base-400: #75838d;
-  --color-base-200: #c3ccd1;
-  --color-base-100: #e7ecef;
+  --color-base-950: var(--base-950);
+  --color-base-900: var(--base-900);
+  --color-base-800: var(--base-800);
+  --color-base-700: var(--base-700);
+  --color-base-600: var(--base-600);
+  --color-base-500: var(--base-500);
+  --color-base-400: var(--base-400);
+  --color-base-200: var(--base-200);
+  --color-base-100: var(--base-100);
 
-  --color-signal-500: #f2a93b;
-  --color-signal-600: #d98e1f;
+  --color-signal-500: var(--signal-500);
+  --color-signal-600: var(--signal-600);
 
-  --color-ok-500: #3fb8af;
-  --color-active-500: #4c8bf5;
-  --color-warn-500: #f2a93b;
-  --color-danger-500: #e2574c;
+  --color-ok-500: var(--ok-500);
+  --color-active-500: var(--active-500);
+  --color-warn-500: var(--warn-500);
+  --color-danger-500: var(--danger-500);
 }
 
 *,
@@ -46,8 +96,10 @@ body {
   margin: 0;
   overflow-x: hidden;
   background-color: var(--color-base-950);
+  background-image: var(--body-bg-image);
   color: var(--color-base-100);
   font-family: var(--font-body);
+  color-scheme: var(--color-scheme);
 }
 
 img,
@@ -64,7 +116,7 @@ canvas {
   gap: 0.35rem;
   padding: 0.2rem 0.5rem 0.2rem 0.45rem;
   border-left: 2px solid currentColor;
-  background: color-mix(in srgb, currentColor 12%, transparent);
+  background: color-mix(in srgb, currentColor 10%, white);
   font-family: var(--font-mono);
   font-size: 0.68rem;
   letter-spacing: 0.06em;

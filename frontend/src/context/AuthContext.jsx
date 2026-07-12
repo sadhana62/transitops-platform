@@ -11,11 +11,11 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const login = useCallback(async (email, password) => {
+  const login = useCallback(async (email, password, role) => {
     setLoading(true);
     setError('');
     try {
-      const { data } = await api.post('/auth/login', { email, password });
+      const { data } = await api.post('/auth/login', { email, password, role });
       localStorage.setItem('transitops_token', data.token);
       localStorage.setItem('transitops_user', JSON.stringify(data.user));
       setUser(data.user);

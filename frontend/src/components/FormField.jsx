@@ -10,7 +10,7 @@ export function Field({ label, children, required }) {
 }
 
 const baseInputClasses =
-  'min-h-11 w-full rounded border border-base-600 bg-base-800 px-3 py-2 text-base text-base-100 placeholder:text-base-500 focus:border-signal-500 focus:outline-none sm:text-sm';
+  'min-h-11 w-full rounded-xl border border-base-700 bg-base-900 px-3 py-2 text-base text-base-100 shadow-sm shadow-base-200/5 placeholder:text-base-500 focus:border-signal-500 focus:outline-none focus:ring-2 focus:ring-signal-500/15 sm:text-sm';
 
 export function Input(props) {
   return (
@@ -43,9 +43,9 @@ export function TextArea(props) {
 
 export function Banner({ tone = 'danger', children }) {
   const colorMap = {
-    danger: 'border-danger-500 bg-danger-500/10 text-danger-500',
-    ok: 'border-ok-500 bg-ok-500/10 text-ok-500',
-    warn: 'border-warn-500 bg-warn-500/10 text-warn-500',
+    danger: 'border-danger-500/30 bg-danger-500/10 text-danger-500',
+    ok: 'border-ok-500/30 bg-ok-500/10 text-ok-500',
+    warn: 'border-warn-500/30 bg-warn-500/10 text-warn-500',
   };
 
   return (
@@ -59,7 +59,7 @@ export function PrimaryButton({ children, className = '', ...props }) {
   return (
     <button
       {...props}
-      className={`min-h-11 rounded bg-signal-500 px-4 py-2 text-sm font-medium text-base-950 hover:bg-signal-600 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`min-h-11 rounded-xl bg-signal-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_20px_-6px_rgba(79,70,229,0.4)] transition hover:bg-signal-600 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
     >
       {children}
     </button>
@@ -70,7 +70,7 @@ export function SecondaryButton({ children, className = '', ...props }) {
   return (
     <button
       {...props}
-      className={`min-h-11 rounded border border-base-600 px-4 py-2 text-sm font-medium text-base-100 hover:border-base-400 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`min-h-11 rounded-xl border border-base-700 bg-base-900 px-4 py-2 text-sm font-semibold text-base-100 shadow-sm shadow-base-200/5 transition hover:border-base-600 hover:bg-base-800 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
     >
       {children}
     </button>

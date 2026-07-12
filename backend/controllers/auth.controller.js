@@ -67,11 +67,17 @@ exports.register = async (req, res) => {
 // POST /api/auth/login
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
-    if (!email || !password) {
+    if (!email || !password || !role) {
       return res.status(400).json({
-        message: "Email and password are required.",
+        message: "Email, password, and role are required.",
+      });
+    }
+
+    if (!ROLES.includes(role)) {
+      return res.status(400).json({
+        message: `Role must be one of: ${ROLES.join(", ")}`,
       });
     }
 
@@ -90,6 +96,12 @@ exports.login = async (req, res) => {
     if (!match) {
       return res.status(401).json({
         message: "Invalid email or password.",
+      });
+    }
+
+    if (user.role !== role) {
+      return res.status(401).json({
+        message: "The selected role does not match this account's role.",
       });
     }
 
