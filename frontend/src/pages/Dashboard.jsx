@@ -68,6 +68,7 @@ export default function Dashboard() {
           <li>Trips move through Draft → Dispatched → Completed, or can be Cancelled.</li>
           <li>Sending a vehicle to Maintenance automatically removes it from dispatch.</li>
           <li>Reports show fuel efficiency, operational cost, and ROI per vehicle.</li>
+          <li>Regions are miantained according to the vehicle stocks.</li>
         </ul>
       </div>
     </div>
